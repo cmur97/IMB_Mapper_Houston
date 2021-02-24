@@ -1,0 +1,46 @@
+!pip install geopandas
+import geopandas as gpd
+import folium
+from geopandas.tools import geocode
+from geopy.geocoders import Nominatim
+import pandas as pd
+import numpy as np
+from folium import Choropleth, Circle, Marker
+
+# I create a new file with just the "Address" column and upload it here
+from google.colab import files
+uploaded = files.upload()
+
+# Read the file and change the name to "IMB_List"
+import io
+IMB_List = pd.read_csv(io.BytesIO(uploaded['Addresses.csv']))
+
+IMB_List.head()
+
+# Geocoder (code from Kaggle's Geospatial Analysis Course)
+def my_geocoder(row):
+  try:
+  point = geocode(row, provider='nominatim').geometry.iloc[0]
+  return pd.Series({'Latitude': point.y, 'Longitude': point.x, 'geometry': point})
+  except:
+    return None
+IMB_List[['Latitude', 'Longitude', 'geometry']] = IMB_List.apply(lambda x: my_geocoder(x['Name']), axis=1)
+print("{}% of addresses were geocoded!".format((1 - sum(np.isnan(IMB_List["Latitude"])) / len(IMB_List)) * 100))
+IMB_List.head()
+
+# Save to a new file and then import it
+IMB_List.to_csv('IMB_List_NYC.csv')
+from google.colab import files
+files.download("IMB_List_NYC.csv")
+
+# Map
+map = folium.Map(location=[40.730610, -73.935242], tiles='openstreetmap', zoom_start=10)
+map
+
+IMB_List=IMB_List.dropna(subset=['Longitude'])
+IMB_List=IMB_List.dropna(subset=['Latitude'])
+
+for idx, row in IMB_List.iterrows():
+  Marker([row['Latitude'], row['Longitude']], popup=row['Name']).add_to(map)
+
+map
