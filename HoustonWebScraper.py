@@ -36,6 +36,9 @@ IMB_List = pd.DataFrame({
     'Address': addresses
 })
 
+# Save to .csv file
+IMB_List.to_csv('IMB_list_Houston.csv', index=False)
+
 
 
 
