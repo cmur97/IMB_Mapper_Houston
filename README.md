@@ -1,4 +1,4 @@
-# IMB_Mapper_NYC
+# IMB_Mapper_Houston
 
 Illicit massage businesses (IMBs) are, by definition, brothels masquerading as massage parlors. Typically, the women are from East Asia, with the majority coming from China and South Korea. There have been many instances of sex trafficking in IMBs. There are a few websites that promote IMBs, but the main one is a site called RubMaps. This is the site used in this project. 
 
